@@ -3,6 +3,7 @@
 #include <ctime>
 #include <vector>
 
+using namespace std;
 using std::vector;
 
 const int GRID_SIZE = 9;

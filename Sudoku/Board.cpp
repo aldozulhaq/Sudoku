@@ -1,6 +1,6 @@
 #include "Board.h"
 
-typedef std::mt19937 RandGenerator;
+typedef mt19937 RandGenerator;
 RandGenerator rng;
 
 Sudoku::Sudoku() {
@@ -11,7 +11,7 @@ Sudoku::Sudoku() {
             solution[i][j] = 0;
         }
     // Populate random number generator seed
-    rng.seed(std::time(nullptr));
+    rng.seed(time(nullptr));
 }
 
 bool Sudoku::n_in_quad(int n, int i, int j) {
@@ -104,7 +104,7 @@ void Sudoku::generate() {
             }
             else {
                 // Get a number randomly from the available numbers
-                std::uniform_int_distribution<uint32_t> tempGenerator(0, possiblesCount(this->possibles[i][j]) - 1);
+                uniform_int_distribution<uint32_t> tempGenerator(0, possiblesCount(this->possibles[i][j]) - 1);
                 int n = tempGenerator(rng) + 1;
                 int choosen = 0;
                 while (true) { // Choose from the possible ones the n-one
@@ -198,7 +198,7 @@ void Sudoku::check_hidden_single(int i, int j) {
     }
 
     // Check for repeated in row and col
-    std::fill_n(times, GRID_SIZE, 0); // reset times array
+    fill_n(times, GRID_SIZE, 0); // reset times array
     int times_col[GRID_SIZE] = { 0 };
     for (int x = 0; x < GRID_SIZE; ++x) {
         for (int n = 0; n < 9; ++n) {
@@ -279,7 +279,7 @@ void Sudoku::copy_solution() {
                 this->grid[i][j] = this->solution[i][j];
             }
         }
-        std::uniform_int_distribution<uint32_t> tempGenerator(0, 8);
+        uniform_int_distribution<uint32_t> tempGenerator(0, 8);
         for (int i = 0; i < CELLS_TO_REMOVE; ++i) {
             x_removed[i] = tempGenerator(rng);
             y_removed[i] = tempGenerator(rng);
@@ -311,7 +311,7 @@ bool Sudoku::is_solution_right() {
 
 // Printing the sudoku board
 void draw_separator() {
-    std::cout << "+-------+-------+-------+" << std::endl;
+    cout << "+-------+-------+-------+" << endl;
 }
 
 char draw_cell_content(const int n) {
@@ -325,10 +325,10 @@ void drawSudoku(int grid[][GRID_SIZE]) {
         if (i % 3 == 0) draw_separator();
         for (int j = 0; j < GRID_SIZE; ++j) {
             // draw col separator
-            if (j % 3 == 0) std::cout << (!j ? "" : " ") << "|";
-            std::cout << " " << draw_cell_content(grid[i][j]);
+            if (j % 3 == 0) cout << (!j ? "" : " ") << "|";
+            cout << " " << draw_cell_content(grid[i][j]);
         }
-        std::cout << " |" << std::endl;
+        cout << " |" << endl;
     }
     draw_separator();
 }
