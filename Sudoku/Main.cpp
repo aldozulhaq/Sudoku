@@ -7,5 +7,4 @@ int main() {
     sudoku.draw();
     sudoku.solve();
     sudoku.draw();
-    return 0;
 }
