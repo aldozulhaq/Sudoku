@@ -3,7 +3,7 @@
 typedef mt19937 RandGenerator;
 RandGenerator rng;
 
-Sudoku::Sudoku() {
+Board::Board() {
     // Clear grid memory
     for (int i = 0; i < GRID_SIZE; ++i)
         for (int j = 0; j < GRID_SIZE; ++j) {
@@ -14,7 +14,38 @@ Sudoku::Sudoku() {
     rng.seed(time(nullptr));
 }
 
-bool Sudoku::n_in_quad(int n, int i, int j) {
+void Board::difficulty(int n)
+{
+    CELLS_TO_REMOVE = n;
+}
+
+void Board::fillCell(int x, int y, int z)
+{
+    grid[x][y] = z;
+}
+
+void Board::deleteCell(int x, int y)
+{
+    if (grid[x][y] != 0)
+    {
+        grid[x][y] = 0;
+    }
+    else {
+        cout << endl << "Cell is already empty!" << endl;
+    }
+}
+
+int Board::getCellValue(int x, int y)
+{
+    return grid[x][y];
+}
+
+int Board::getCellSolValue(int x, int y)
+{
+    return solution[x][y];
+}
+
+bool Board::nInRegion(int n, int i, int j) {
     // translate region coords to center position in grid
     int center[2] = { i * 3 + 1, j * 3 + 1 };
     // iterate over region to check if n exists in it
@@ -27,7 +58,7 @@ bool Sudoku::n_in_quad(int n, int i, int j) {
     return false;
 }
 
-bool Sudoku::n_in_col(int n, int j) {
+bool Board::nInCol(int n, int j) {
     // iterate over the col to check if n exists in it
     for (int i = 0; i < GRID_SIZE; ++i) {
         if (solution[i][j] == 0) break;
@@ -36,7 +67,7 @@ bool Sudoku::n_in_col(int n, int j) {
     return false;
 }
 
-vector<bool> Sudoku::get_quad_possibles(int i, int j) {
+vector<bool> Board::getRegionPossibilities(int i, int j) {
     vector<bool> output(9, true);
     // translate region coords to center position in grid
     int center[2] = { i * 3 + 1, j * 3 + 1 };
@@ -50,7 +81,7 @@ vector<bool> Sudoku::get_quad_possibles(int i, int j) {
     return output;
 }
 
-vector<bool> Sudoku::get_col_possibles(int j) {
+vector<bool> Board::getColPossibilites(int j) {
     vector<bool> output(9, true);
     for (int i = 0; i < GRID_SIZE; ++i) {
         if (this->grid[i][j] != 0)
@@ -59,7 +90,7 @@ vector<bool> Sudoku::get_col_possibles(int j) {
     return output;
 }
 
-vector<bool> Sudoku::get_row_possibles(int i) {
+vector<bool> Board::getRowPossibilities(int i) {
     vector<bool> output(9, true);
     for (int j = 0; j < GRID_SIZE; ++j) {
         if (this->grid[i][j] != 0)
@@ -76,7 +107,7 @@ int possiblesCount(vector<bool> possibles) {
     return count;
 }
 
-void Sudoku::generate() {
+void Board::generate() {
     vector<bool> oneToNine(9, true);
 
     // Generate grid
@@ -115,7 +146,7 @@ void Sudoku::generate() {
 
 
                 // Check if it conflicts
-                if (n_in_quad(choosen + 1, i / 3, j / 3) || n_in_col(choosen + 1, j)) {
+                if (nInRegion(choosen + 1, i / 3, j / 3) || nInCol(choosen + 1, j)) {
                     // Remove from available numbers for this square
                     this->possibles[i][j][choosen] = false;
                 }
@@ -130,13 +161,13 @@ void Sudoku::generate() {
     }
 
     // remove from grid according to the only-one-solution rule
-    copy_solution();
+    copySol();
 }
 
 // Solving
 
 // n is 0-based
-void Sudoku::set_cell_solved(int i, int j, int n) {
+void Board::setCellSolved(int i, int j, int n) {
     int center[2] = { (i / 3) * 3 + 1, (j / 3) * 3 + 1 };
     // iterate over region to remove n from possibles
     for (int x = center[0] - 1; x <= center[0] + 1; ++x) {
@@ -155,7 +186,7 @@ void Sudoku::set_cell_solved(int i, int j, int n) {
     this->grid[i][j] = n + 1;
 }
 
-int Sudoku::check_solved_cells() {
+int Board::checkSolvedCells() {
     int solved = 0;
     for (int i = 0; i < GRID_SIZE; ++i) {
         for (int j = 0; j < GRID_SIZE; ++j) {
@@ -165,7 +196,7 @@ int Sudoku::check_solved_cells() {
                 for (int x = 0; x < 9; ++x) {
                     if (this->possibles[i][j][x]) {
                         solved++;
-                        set_cell_solved(i, j, x);
+                        setCellSolved(i, j, x);
                         break;
                     }
                 }
@@ -176,7 +207,7 @@ int Sudoku::check_solved_cells() {
 }
 
 // Last Remaining Cell in a Box
-void Sudoku::check_hidden_single(int i, int j) {
+void Board::checkRegion(int i, int j) {
     // Get region center coords
     int center[2] = { (i / 3) * 3 + 1, (j / 3) * 3 + 1 };
 
@@ -193,7 +224,7 @@ void Sudoku::check_hidden_single(int i, int j) {
     for (int n = 0; n < GRID_SIZE; ++n) {
         if (times[n] == 1) {
             // Only one possible n in region
-            set_cell_solved(i, j, n);
+            setCellSolved(i, j, n);
         }
     }
 
@@ -211,16 +242,16 @@ void Sudoku::check_hidden_single(int i, int j) {
     for (int n = 0; n < GRID_SIZE; ++n) {
         if (times[n] == 1) {
             // Only one possible n in row
-            set_cell_solved(i, j, n);
+            setCellSolved(i, j, n);
         }
         else if (times_col[n] == 1) {
             // Only one possible n in col
-            set_cell_solved(i, j, n);
+            setCellSolved(i, j, n);
         }
     }
 }
 
-bool Sudoku::solve() {
+bool Board::solve() {
     this->solution_changes = 0;
     // clear memory from possibles array
     for (int i = 0; i < GRID_SIZE; ++i) {
@@ -235,14 +266,14 @@ bool Sudoku::solve() {
         vector<bool> v_possibles[GRID_SIZE];
         vector<bool> h_possibles[GRID_SIZE];
         for (int j = 0; j < GRID_SIZE; ++j) {
-            v_possibles[j] = get_col_possibles(j);
+            v_possibles[j] = getColPossibilites(j);
         }
 
         // Calculate all possibles of each cell
         for (int i = 0; i < GRID_SIZE; ++i) {
-            h_possibles[i] = get_row_possibles(i);
+            h_possibles[i] = getRowPossibilities(i);
             for (int j = 0; j < GRID_SIZE; ++j) {
-                vector<bool> q_possibles = get_quad_possibles(i / 3, j / 3);
+                vector<bool> q_possibles = getRegionPossibilities(i / 3, j / 3);
                 for (int n = 0; n < 9; ++n) {
                     this->possibles[i][j][n] = (h_possibles[i][n] &&
                         v_possibles[j][n] &&
@@ -252,11 +283,11 @@ bool Sudoku::solve() {
         }
 
         // Check for solved cells
-        if (check_solved_cells() == 0) {
+        if (checkSolvedCells() == 0) {
             for (int i = 0; i < GRID_SIZE; ++i) {
                 for (int j = 0; j < GRID_SIZE; ++j) {
                     if (this->grid[i][j] != 0) continue;
-                    check_hidden_single(i, j);
+                    checkRegion(i, j);
                 }
             }
         }
@@ -265,13 +296,16 @@ bool Sudoku::solve() {
         if (lastChanges == this->solution_changes) break;
     }
 
-    return is_solution_right();
+    return isSolRight();
 }
 
-void Sudoku::copy_solution() {
+void Board::copySol() {
     // Save the removed cells coordinates
-    int x_removed[CELLS_TO_REMOVE];
-    int y_removed[CELLS_TO_REMOVE];
+    // int x_removed[CELLS_TO_REMOVE];
+    // int y_removed[CELLS_TO_REMOVE];
+
+    int *x_removed = new int[CELLS_TO_REMOVE];
+    int *y_removed = new int[CELLS_TO_REMOVE];
 
     while (true) { // while more than one solution
         for (int i = 0; i < GRID_SIZE; ++i) {
@@ -290,7 +324,7 @@ void Sudoku::copy_solution() {
             }
             this->grid[x_removed[i]][y_removed[i]] = 0;
         }
-        if (this->solve()) break; // End loop when found only one solution sudoku
+        if (this->solve()) break; // End loop when found only one solution Board
     }
 
     for (int i = 0; i < CELLS_TO_REMOVE; ++i) {
@@ -298,7 +332,7 @@ void Sudoku::copy_solution() {
     }
 }
 
-bool Sudoku::is_solution_right() {
+bool Board::isSolRight() {
     for (int i = 0; i < GRID_SIZE; ++i) {
         for (int j = 0; j < GRID_SIZE; ++j) {
             if (this->grid[i][j] != this->solution[i][j]) {
@@ -309,7 +343,7 @@ bool Sudoku::is_solution_right() {
     return true;
 }
 
-// Printing the sudoku board
+// Printing the Board board
 void draw_separator() {
     cout << "+-------+-------+-------+" << endl;
 }
@@ -320,7 +354,7 @@ char draw_cell_content(const int n) {
     else return n + '0';
 }
 
-void drawSudoku(int grid[][GRID_SIZE]) {
+void drawBoard(int grid[][GRID_SIZE]) {
     for (int i = 0; i < GRID_SIZE; ++i) {
         if (i % 3 == 0) draw_separator();
         for (int j = 0; j < GRID_SIZE; ++j) {
@@ -333,10 +367,10 @@ void drawSudoku(int grid[][GRID_SIZE]) {
     draw_separator();
 }
 
-void Sudoku::draw() {
-    drawSudoku(this->grid);
+void Board::draw() {
+    drawBoard(this->grid);
 }
 
-void Sudoku::drawSolution() {
-    drawSudoku(this->solution);
+void Board::drawSolution() {
+    drawBoard(this->solution);
 }
