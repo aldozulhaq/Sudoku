@@ -35,6 +35,8 @@ int main() {
         case 5:
             gm.loadFile();
             break;
+        case 99:
+            break;
         }
     }
     
