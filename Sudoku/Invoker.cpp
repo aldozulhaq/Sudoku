@@ -35,3 +35,8 @@ bool Invoker::isEmpty()
 {
 	return history.empty();
 }
+
+int Invoker::getSize()
+{
+	return history.size();
+}

@@ -11,7 +11,10 @@ int main() {
     {
         cout << "---Menu---" << endl
              << "1. Play" << endl
-             << "2. Set Player Name" << endl
+             << "2. Contibue " << endl
+             << "3. Set Player Name" << endl
+             << "4. Save" << endl
+             << "5. Load" << endl
              << "99. Exit" << endl
              << "[] : "; cin >> menuOpt;
 
@@ -21,7 +24,16 @@ int main() {
             gm.play();
             break;
         case 2:
+            gm.continueGame();
+            break;
+        case 3:
             gm.setPlayerUsername();
+            break;
+        case 4:
+            gm.saveFile();
+            break;
+        case 5:
+            gm.loadFile();
             break;
         }
     }

@@ -1,7 +1,7 @@
 #include "Helper.h"
-using std::vector;
+#define GRID_SIZE 9
 
-const int GRID_SIZE = 9;
+//const int GRID_SIZE = 9;
 
 class Board {
 private:
@@ -37,4 +37,6 @@ public:
     int getCellValue(int x, int y);
     void fillCell(int x, int y, int z);
     void deleteCell(int x, int y);
+    void setCell(int x, int y, int z);
+    void setSolCell(int x, int y, int z);
 };

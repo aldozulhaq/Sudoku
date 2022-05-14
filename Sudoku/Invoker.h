@@ -11,5 +11,5 @@ public:
 	void push(Command*command);
 	Command & pop();
 	bool isEmpty();
+	int getSize();
 };
-

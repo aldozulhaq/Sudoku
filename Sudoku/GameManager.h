@@ -11,11 +11,14 @@ private:
 	Invoker redo;
 public:
 	GameManager(Board* board, Player* player);
-	bool checkWin();
+	void checkWrongCell();
 	void undoAct();
 	void setPlayerUsername();
 	void redoAct();
 	void fillCell(int x, int y, int value);
 	void deleteCell(int x, int y);
 	void play();
+	void continueGame();
+	void saveFile();
+	void loadFile();
 };

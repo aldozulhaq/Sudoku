@@ -6,9 +6,61 @@ GameManager::GameManager(Board* board, Player* player)
 	this->player = player;
 }
 
-bool GameManager::checkWin()
+void GameManager::checkWrongCell()
 {
-	return board->isSolRight();
+	struct wrongCell
+	{
+		int x;
+		int y;
+		int value;
+	};
+
+	vector <wrongCell> Cell;
+
+	for (int i = 0; i < GRID_SIZE; ++i) {
+		for (int j = 0; j < GRID_SIZE; ++j) {
+			if (this->board->getCellValue(i,j) != this->board->getCellSolValue(i, j)) {
+				Cell.push_back({i, j, this->board->getCellValue(i,j) });
+			}
+		}
+	}
+
+
+	cout << endl
+		 << "Every cell are correct exept for these : " << endl;
+	for (const auto &arr : Cell)
+	{
+		cout << "Cell "
+			 << "[" << arr.x << "]"
+			 << "[" << arr.y << "] : ";
+		if (arr.value == 0)
+		{
+			cout << "Still Empty";
+		}
+		else {
+			cout << arr.value;
+		}
+		cout << endl;
+		Cell.pop_back();
+	}
+}
+
+void GameManager::saveFile()
+{
+	SaveLoad save;
+	string filename;
+	save.showSaveList();
+	cout << endl << "Save as : "; cin >> filename;
+	save.Save(board, filename);
+}
+
+void GameManager::loadFile()
+{
+	SaveLoad load;
+	string filename;
+	load.showSaveList();
+	cout << endl << "Load from : "; cin >> filename;
+	load.Load(board, filename);
 }
 
 void GameManager::setPlayerUsername()
@@ -21,18 +73,34 @@ void GameManager::setPlayerUsername()
 
 void GameManager::play()
 {
+	cout << endl << "Set Difficulty, how many cell to remove : ";
+	int r = 0; cin >> r;
+	this->board->difficulty(r);
 	board->generate();
-	
+	continueGame();
+}
+
+void GameManager::continueGame()
+{
 	int op = 0;
 	int x, y, z;
 	while (op != 99)
 	{
+		if (this->board->isSolRight())
+		{
+			cout << endl << "Congratulations!!" << endl
+				<< "you have finished the sudoku with "
+				<< (undo.getSize() + redo.getSize())
+				<< " action!" << endl << endl;
+			break;
+		}
 		board->draw();
 		cout << endl
 			<< "[1] Fill" << endl
 			<< "[2] Delete " << endl
 			<< "[3] Undo " << endl
 			<< "[4] Redo " << endl
+			<< "[5] Check Wrong Cell" << endl
 			<< "[99] Exit" << endl
 			<< "[] : "; cin >> op;
 		switch (op)
@@ -54,6 +122,8 @@ void GameManager::play()
 		case 4:
 			redoAct();
 			break;
+		case 5:
+			checkWrongCell();
 		}
 	}
 }

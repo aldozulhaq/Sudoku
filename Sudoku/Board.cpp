@@ -374,3 +374,12 @@ void Board::draw() {
 void Board::drawSolution() {
     drawBoard(this->solution);
 }
+
+void Board::setCell(int x, int y, int z) {
+    grid[x][y] = z;
+}
+
+void Board::setSolCell(int x, int y, int z)
+{
+    solution[x][y] = z;
+}
