@@ -10,8 +10,8 @@ void Invoker::push(Command* command)
 	history.push_back(command);
 }
 
-Command & Invoker::pop()
-{	
+Command& Invoker::pop()
+{
 	if (history.empty())
 	{
 		cout << endl
@@ -28,7 +28,7 @@ Command & Invoker::pop()
 		history.pop_back();
 
 		return *temp;
-	}	
+	}
 }
 
 bool Invoker::isEmpty()

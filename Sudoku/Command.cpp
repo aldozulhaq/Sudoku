@@ -66,8 +66,6 @@ void Fill::redo()
 	board->fillCell(query[0], query[1], query[2]);
 }
 
-
-
 SaveLoad::SaveLoad()
 {
 	namespace fs = filesystem;

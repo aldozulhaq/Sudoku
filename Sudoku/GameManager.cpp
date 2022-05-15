@@ -19,20 +19,19 @@ void GameManager::checkWrongCell()
 
 	for (int i = 0; i < GRID_SIZE; ++i) {
 		for (int j = 0; j < GRID_SIZE; ++j) {
-			if (this->board->getCellValue(i,j) != this->board->getCellSolValue(i, j)) {
-				Cell.push_back({i, j, this->board->getCellValue(i,j) });
+			if (this->board->getCellValue(i, j) != this->board->getCellSolValue(i, j)) {
+				Cell.push_back({ i, j, this->board->getCellValue(i,j) });
 			}
 		}
 	}
 
-
 	cout << endl
-		 << "Every cell are correct exept for these : " << endl;
-	for (const auto &arr : Cell)
+		<< "Every cell are correct exept for these : " << endl;
+	for (const auto& arr : Cell)
 	{
 		cout << "Cell "
-			 << "[" << arr.x << "]"
-			 << "[" << arr.y << "] : ";
+			<< "[" << arr.x << "]"
+			<< "[" << arr.y << "] : ";
 		if (arr.value == 0)
 		{
 			cout << "Still Empty";
@@ -67,7 +66,7 @@ void GameManager::setPlayerUsername()
 {
 	string username;
 	cout << endl
-		 << "Insert username : "; cin >> username;
+		<< "Insert username : "; cin >> username;
 	player->setUsername(username);
 }
 
@@ -124,13 +123,14 @@ void GameManager::continueGame()
 			break;
 		case 5:
 			checkWrongCell();
+		default:;
 		}
 	}
 }
 
 void GameManager::undoAct()
 {
-	Command* a; 
+	Command* a;
 	a = &undo.pop();
 	cout << a->getType();
 	redo.push(a);
@@ -154,9 +154,9 @@ void GameManager::redoAct()
 
 void GameManager::fillCell(int x, int y, int value)
 {
-	Fill *a = new Fill;
+	Fill* a = new Fill;
 	a->setBoard(board);
-	if (board->getCellValue(x,y) != 0)
+	if (board->getCellValue(x, y) != 0)
 	{
 		cout << endl << "Cell already has value!" << endl;
 	}

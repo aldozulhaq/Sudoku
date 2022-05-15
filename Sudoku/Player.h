@@ -13,4 +13,3 @@ public:
 	string getUsername();
 	int getScore();
 };
-

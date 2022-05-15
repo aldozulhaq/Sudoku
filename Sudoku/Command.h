@@ -4,8 +4,8 @@
 class Command
 {
 protected:
-	int query[3];
-	Board* board;
+	int query[3]{};
+	Board* board{};
 	string type = "";
 public:
 	Command();
@@ -45,7 +45,7 @@ private:
 	vector <string> file;
 public:
 	SaveLoad();
-	void Save(Board *board, string name);
-	void Load(Board *board, string name);
+	void Save(Board* board, string name);
+	void Load(Board* board, string name);
 	void showSaveList();
 };

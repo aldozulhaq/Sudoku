@@ -8,8 +8,8 @@ private:
 public:
 	Invoker();
 	~Invoker() = default;
-	void push(Command*command);
-	Command & pop();
+	void push(Command* command);
+	Command& pop();
 	bool isEmpty();
 	int getSize();
 };
