@@ -1,3 +1,4 @@
+#pragma once
 #include "Helper.h"
 #include "Board.h"
 
@@ -36,16 +37,4 @@ public:
 	virtual void undo();
 	virtual void redo();
 	virtual void execute(int x, int y);
-};
-
-class SaveLoad
-{
-private:
-	string const path = "saveload/";
-	vector <string> file;
-public:
-	SaveLoad();
-	void Save(Board* board, string name);
-	void Load(Board* board, string name);
-	void showSaveList();
 };

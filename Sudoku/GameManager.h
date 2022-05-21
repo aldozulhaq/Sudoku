@@ -1,6 +1,9 @@
+#pragma once
 #include "Helper.h"
 #include "Invoker.h"
 #include "Player.h"
+#include "Command.h"
+#include "SaveLoad.h"
 
 class GameManager
 {

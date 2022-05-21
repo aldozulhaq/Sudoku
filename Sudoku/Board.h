@@ -1,3 +1,4 @@
+#pragma once
 #include "Helper.h"
 #define GRID_SIZE 9
 
